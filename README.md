@@ -1,6 +1,17 @@
 ### LNST Portal
 
-Customer and dealer portal for Lakshmi NeuroSpine Technologies
+Operations and portal platform for Lakshmi NeuroSpine Technologies.
+
+Serves everything under `/lnst`:
+
+- `/lnst/login` — terminal sign-in, and the owner of the session contract
+  (`public/js/lnst_session.js`).
+- `/lnst` — operations overview and the directory of every screen.
+- `/lnst/<screen>` — the field-executive, warehouse and back-office screens,
+  declared in `www/lnst/__init__.py` and rendered from `templates/lnst_base.html`.
+
+Still a front-end mockup: no DocTypes and no API. Screen state comes from
+`public/js/mock_data.js` and lives in localStorage.
 
 ### Installation
 
@@ -31,3 +42,4 @@ Pre-commit is configured to use the following tools for checking and formatting 
 ### License
 
 mit
+# A3-Surgiware
