@@ -1,0 +1,45 @@
+{% extends "lnst_portal/templates/lnst_base.html" %}
+
+{% block content %}
+<div class="board">
+
+	<div class="board-bar">
+		<div class="board-live"><span class="scan-dot" aria-hidden="true"></span>
+			<b>Live</b><span data-updated>just now</span></div>
+		<span class="spacer"></span>
+		<select class="input input-mini" data-f-branch></select>
+		<div class="board-clock" data-clock>--:--:--</div>
+	</div>
+
+	<div class="tiles board-tiles" data-kpis></div>
+
+	<section class="panel board-flow">
+		<div class="panel-head">
+			<h2>Where every case is</h2>
+			<span class="spacer"></span>
+			<span class="panel-note">click a stage to open it</span>
+		</div>
+		<div class="flow" data-flow></div>
+	</section>
+
+	<div class="board-grid">
+		<section class="panel">
+			<div class="panel-head"><h2>Needs a manager</h2>
+				<span class="spacer"></span>
+				<span class="panel-note" data-attention-count></span></div>
+			<div class="board-scroll" data-attention></div>
+		</section>
+
+		<section class="panel">
+			<div class="panel-head"><h2>By branch</h2></div>
+			<div data-branches></div>
+		</section>
+
+		<section class="panel">
+			<div class="panel-head"><h2>Money and shelf life</h2></div>
+			<div data-risk></div>
+		</section>
+	</div>
+
+</div>
+{% endblock %}

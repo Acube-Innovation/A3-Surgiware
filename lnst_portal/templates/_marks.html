@@ -1,0 +1,28 @@
+{#
+  The two marks, as macros so the rail and the app header draw the same glyphs.
+  Both inherit `currentColor`, so a mark is coloured by whatever it sits on.
+#}
+
+{%- macro acube() -%}
+<svg class="mark-acube" width="98" height="20" viewBox="0 0 98 20" role="img"
+     aria-label="Acube Innovations" fill="none">
+	<rect x="1" y="4" width="12" height="12" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+	<rect x="5.6" y="8.6" width="2.8" height="2.8" rx=".5" fill="currentColor"/>
+	<text x="21" y="15" font-family="inherit" font-size="12.5" font-weight="600"
+	      letter-spacing="2.4" fill="currentColor">ACUBE</text>
+</svg>
+{%- endmacro -%}
+
+{#- The wordmark: LNST, a heartbeat where the M belongs, then ED. -#}
+{%- macro lnst(size=27) -%}
+<svg class="mark-lnst" width="{{ (size * 6.6) | round | int }}" height="{{ (size * 1.16) | round | int }}"
+     viewBox="0 0 178 32" role="img" aria-label="LNST MED" fill="none">
+	<text x="0" y="24" font-family="inherit" font-size="27" font-weight="700"
+	      letter-spacing=".5" fill="currentColor">LNST</text>
+	<polyline points="72,17 80,17 84,9 90,26 95,14 100,17 110,17"
+	          stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
+	          stroke-linejoin="round"/>
+	<text x="112" y="24" font-family="inherit" font-size="27" font-weight="700"
+	      letter-spacing=".5" fill="currentColor">ED</text>
+</svg>
+{%- endmacro -%}

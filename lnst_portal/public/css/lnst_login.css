@@ -1,0 +1,563 @@
+/* Copyright (c) 2026, Acube Innovations Pvt Ltd and contributors
+ *
+ * LNST — Warehouse Operations Terminal design kit.
+ *
+ * These pages are standalone documents. They do not extend ERPNext's web
+ * template, so nothing from the desk leaks in and nothing here leaks out. Every
+ * colour on every screen comes from the token block below — there are no
+ * one-off hex values further down this file.
+ */
+
+:root {
+	--navy: #0F2A47;
+	--blue: #0E7FC0;
+	--amber: #E8A317;
+	--stop: #C0392B;
+	--surface: #F4F6F8;
+	--line: #DDE3E9;
+	--ink: #1B2733;
+	--muted: #6B7A88;
+	--go: #1E8E5A;
+
+	--sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+		"Helvetica Neue", Arial, sans-serif;
+	--mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+		"Liberation Mono", monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+
+body {
+	font-family: var(--sans);
+	color: var(--ink);
+	background: var(--surface);
+	font-size: 15px;
+	line-height: 1.5;
+	-webkit-font-smoothing: antialiased;
+}
+
+/* The terminal is a fixed-size appliance screen, not a document. Nothing
+   scrolls the page itself at 1280x800. */
+body.lnst-fixed { overflow: hidden; }
+
+/* ============================================================ sign-in split */
+
+.signin {
+	display: flex;
+	height: 100vh;
+	width: 100%;
+}
+
+/* ---------------------------------------------------------------- left rail */
+
+.signin-rail {
+	flex: 0 0 40%;
+	background: var(--navy);
+	color: #fff;
+	padding: 44px 48px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	overflow: hidden;
+}
+
+.rail-marks { display: flex; flex-direction: column; gap: 26px; align-items: flex-start; }
+
+.mark-acube { display: block; }
+.mark-lnst { display: block; }
+
+.rail-line {
+	margin: 22px 0 0;
+	font-size: 17px;
+	font-weight: 400;
+	color: #fff;
+	letter-spacing: .01em;
+}
+
+/* The four branches, with the one this terminal belongs to picked out. */
+.rail-branches {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 18px;
+	font-size: 13px;
+	color: #fff;
+}
+
+.rail-branch {
+	opacity: .45;
+	padding-bottom: 3px;
+	border-bottom: 2px solid transparent;
+	transition: opacity .15s ease;
+}
+
+.rail-branch.is-bound {
+	opacity: 1;
+	border-bottom-color: var(--amber);
+}
+
+/* --------------------------------------------------------------- right side */
+
+.signin-main {
+	flex: 1 1 60%;
+	background: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 32px;
+	overflow: hidden;
+}
+
+.signin-card {
+	width: 100%;
+	max-width: 420px;
+	position: relative;
+}
+
+.signin-title {
+	margin: 0 0 22px;
+	font-size: 28px;
+	line-height: 1.2;
+	font-weight: 600;
+	color: var(--navy);
+}
+
+/* Everything the badge overlay dims sits in here. */
+.card-body { transition: opacity .18s ease; }
+
+.field { margin-bottom: 14px; }
+
+.field-label {
+	display: block;
+	margin-bottom: 6px;
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--muted);
+}
+
+.field-input {
+	width: 100%;
+	height: 56px;
+	padding: 0 14px;
+	font: inherit;
+	color: var(--ink);
+	background: #fff;
+	border: 1px solid var(--line);
+	border-radius: 4px;
+	outline: none;
+	transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.field-input:focus {
+	border-color: var(--blue);
+	box-shadow: 0 0 0 3px rgba(14, 127, 192, .15);
+}
+
+.field-input.is-bad {
+	outline: 1.5px solid var(--stop);
+	outline-offset: -1.5px;
+	border-color: var(--stop);
+}
+
+/* ------------------------------------------------------- branch segmented */
+
+.segmented {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	border: 1px solid var(--line);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.segment {
+	appearance: none;
+	border: 0;
+	border-left: 1px solid var(--line);
+	background: #fff;
+	color: var(--muted);
+	font: inherit;
+	font-size: 13px;
+	line-height: 1.25;
+	padding: 9px 4px;
+	min-height: 46px;
+	cursor: pointer;
+	transition: background .15s ease, color .15s ease;
+}
+
+.segment:first-child { border-left: 0; }
+.segment:hover { background: var(--surface); }
+
+.segment.is-on {
+	background: var(--navy);
+	color: #fff;
+	font-weight: 600;
+}
+
+.segment small {
+	display: block;
+	font-size: 11px;
+	font-weight: 400;
+	opacity: .75;
+}
+
+/* ------------------------------------------------- wrong-branch confirm */
+
+.branch-warn {
+	display: none;
+	margin: 12px 0 14px;
+	padding: 11px 13px;
+	border: 1px solid var(--amber);
+	border-left: 3px solid var(--amber);
+	border-radius: 4px;
+	background: rgba(232, 163, 23, .09);
+	font-size: 13px;
+	color: var(--ink);
+}
+
+.branch-warn.is-open { display: block; }
+
+.branch-warn-actions {
+	margin-top: 8px;
+	display: flex;
+	gap: 16px;
+}
+
+.linkbtn {
+	appearance: none;
+	background: none;
+	border: 0;
+	padding: 0;
+	font: inherit;
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--blue);
+	cursor: pointer;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.linkbtn.is-quiet { color: var(--muted); font-weight: 500; }
+
+/* ------------------------------------------------------------- terminal id */
+
+.terminal-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	height: 46px;
+	padding: 0 12px;
+	background: var(--surface);
+	border: 1px solid var(--line);
+	border-radius: 4px;
+}
+
+.terminal-id {
+	flex: 1;
+	font-family: var(--mono);
+	font-size: 14px;
+	color: var(--ink);
+	letter-spacing: .02em;
+}
+
+.terminal-edit {
+	display: none;
+	gap: 8px;
+	align-items: center;
+}
+
+.terminal-edit.is-open { display: flex; }
+
+.terminal-edit input {
+	flex: 1;
+	height: 32px;
+	padding: 0 8px;
+	font-family: var(--mono);
+	font-size: 13px;
+	color: var(--ink);
+	border: 1px solid var(--line);
+	border-radius: 3px;
+	outline: none;
+}
+
+.terminal-edit input:focus { border-color: var(--blue); }
+
+/* --------------------------------------------------------------- badge tile */
+
+.badge-tile {
+	display: flex;
+	align-items: center;
+	gap: 13px;
+	width: 100%;
+	margin: 18px 0 14px;
+	padding: 13px 16px;
+	background: #fff;
+	border: 1.5px solid var(--line);
+	border-radius: 4px;
+	cursor: pointer;
+	text-align: left;
+	font: inherit;
+	transition: border-color .15s ease, background .15s ease;
+}
+
+.badge-tile:hover {
+	border-color: var(--blue);
+	background: var(--surface);
+}
+
+.badge-tile-text { display: block; }
+
+.badge-tile-main {
+	display: block;
+	font-size: 15px;
+	font-weight: 600;
+	color: var(--navy);
+}
+
+.badge-tile-sub {
+	display: block;
+	font-size: 12px;
+	color: var(--muted);
+}
+
+/* ------------------------------------------------------------------ button */
+
+.btn-primary {
+	display: block;
+	width: 100%;
+	height: 56px;
+	border: 0;
+	border-radius: 4px;
+	background: var(--blue);
+	color: #fff;
+	font: inherit;
+	font-size: 16px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: filter .15s ease;
+}
+
+.btn-primary:hover { filter: brightness(1.07); }
+.btn-primary:disabled { opacity: .5; cursor: not-allowed; filter: none; }
+
+/* ------------------------------------------------------------------- error */
+
+.field-error {
+	display: none;
+	margin: 7px 0 0;
+	font-size: 13px;
+	color: var(--stop);
+}
+
+.field-error.is-open { display: block; }
+
+/* ------------------------------------------------------------------ footer */
+
+.signin-foot {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-top: 18px;
+	font-size: 12px;
+	color: var(--muted);
+}
+
+.dot {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: var(--go);
+	flex: 0 0 6px;
+}
+
+.foot-sep { margin-left: auto; }
+
+/* ============================================== badge scan overlay + rings */
+
+.card-body.is-dim {
+	opacity: .25;
+	pointer-events: none;
+	user-select: none;
+}
+
+.scan-overlay {
+	display: none;
+	position: absolute;
+	inset: 0;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 14px;
+	z-index: 2;
+}
+
+.scan-overlay.is-open { display: flex; }
+
+.scan-rings {
+	position: relative;
+	width: 108px;
+	height: 108px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Two rings, half a cycle apart, so the pulse never fully empties. */
+.scan-rings::before,
+.scan-rings::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: 50%;
+	border: 2px solid var(--blue);
+	animation: lnst-pulse 2s ease-out infinite;
+}
+
+.scan-rings::after { animation-delay: 1s; }
+
+@keyframes lnst-pulse {
+	0%   { transform: scale(.55); opacity: .85; }
+	100% { transform: scale(1.25); opacity: 0; }
+}
+
+.scan-icon { color: var(--blue); }
+
+.scan-caption {
+	font-size: 15px;
+	font-weight: 600;
+	color: var(--navy);
+}
+
+/* Off-screen, but focused: a badge reader types like a keyboard. */
+.scan-catcher {
+	position: absolute;
+	opacity: 0;
+	width: 1px;
+	height: 1px;
+	border: 0;
+	padding: 0;
+	pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.scan-rings::before, .scan-rings::after { animation-duration: 6s; }
+}
+
+/* ==================================================== shared app furniture */
+
+.lnst-header {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	height: 60px;
+	padding: 0 22px;
+	background: var(--navy);
+	color: #fff;
+}
+
+.lnst-header .mark-lnst { flex: 0 0 auto; }
+
+.lnst-header-branch {
+	font-size: 13px;
+	color: #fff;
+	opacity: .75;
+	padding-left: 16px;
+	border-left: 1px solid rgba(255, 255, 255, .2);
+}
+
+.lnst-header-right {
+	margin-left: auto;
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	font-size: 13px;
+}
+
+.lnst-header-user { opacity: .85; }
+
+.lnst-signout {
+	appearance: none;
+	background: none;
+	border: 1px solid rgba(255, 255, 255, .35);
+	border-radius: 4px;
+	color: #fff;
+	font: inherit;
+	font-size: 13px;
+	padding: 6px 14px;
+	cursor: pointer;
+	transition: background .15s ease;
+}
+
+.lnst-signout:hover { background: rgba(255, 255, 255, .12); }
+
+.lnst-main { padding: 28px 22px; }
+
+.lnst-stub {
+	max-width: 640px;
+	margin: 40px auto;
+	padding: 28px 30px;
+	background: #fff;
+	border: 1px solid var(--line);
+	border-radius: 4px;
+}
+
+.lnst-stub h1 { margin: 0 0 8px; font-size: 22px; color: var(--navy); }
+.lnst-stub p { margin: 0 0 6px; color: var(--muted); font-size: 14px; }
+
+.lnst-stub dl {
+	margin: 18px 0 0;
+	display: grid;
+	grid-template-columns: 150px 1fr;
+	gap: 8px 12px;
+	font-size: 13px;
+}
+
+.lnst-stub dt { color: var(--muted); }
+.lnst-stub dd { margin: 0; font-family: var(--mono); color: var(--ink); }
+
+/* ====================================================== mockup dev strip */
+
+/* Not part of the product. It exists so all four states can be walked through
+   without a back end, and it is the one thing to delete when this stops being
+   a mockup. */
+.devstrip {
+	position: fixed;
+	right: 14px;
+	bottom: 14px;
+	z-index: 20;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 7px 9px;
+	background: #fff;
+	border: 1px solid var(--line);
+	border-radius: 4px;
+	box-shadow: 0 6px 18px -8px rgba(27, 39, 51, .35);
+}
+
+.devstrip-label {
+	font-size: 10px;
+	letter-spacing: .09em;
+	text-transform: uppercase;
+	color: var(--muted);
+	padding-right: 3px;
+}
+
+.devbtn {
+	appearance: none;
+	border: 1px solid var(--line);
+	background: #fff;
+	border-radius: 3px;
+	font: inherit;
+	font-size: 12px;
+	color: var(--ink);
+	padding: 5px 9px;
+	cursor: pointer;
+}
+
+.devbtn:hover { background: var(--surface); }
+.devbtn.is-on { background: var(--navy); color: #fff; border-color: var(--navy); }

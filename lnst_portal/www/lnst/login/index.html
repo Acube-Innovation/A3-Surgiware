@@ -1,0 +1,166 @@
+{%- import "lnst_portal/templates/_marks.html" as marks -%}
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Sign in · LNST Warehouse Operations Terminal</title>
+	<meta name="robots" content="noindex">
+	<link rel="stylesheet" href="/assets/lnst_portal/css/lnst_login.css?v={{ asset_v }}">
+</head>
+<body class="lnst-fixed">
+
+<main class="signin">
+
+	<!-- ------------------------------------------------------- left rail -->
+	<aside class="signin-rail">
+		<div>
+			<div class="rail-marks">
+				{{ marks.acube() }}
+				{{ marks.lnst() }}
+			</div>
+			<p class="rail-line">Inventory &amp; Operations Platform</p>
+		</div>
+
+		{# The branch this terminal is bolted to is picked out; the rest stay quiet. #}
+		<div class="rail-branches">
+			{% for branch in branches %}
+			<span class="rail-branch" data-rail-branch="{{ branch }}">{{ branch }}</span>
+			{% endfor %}
+		</div>
+	</aside>
+
+	<!-- ------------------------------------------------------ sign-in card -->
+	<section class="signin-main">
+		<div class="signin-card" data-card>
+
+			<div class="card-body" data-card-body>
+				<h1 class="signin-title">Sign in to the terminal</h1>
+
+				<!-- 2. branch -->
+				<div class="field">
+					<span class="field-label">Branch</span>
+					<div class="segmented" role="group" aria-label="Branch">
+						<button type="button" class="segment" data-branch="Kochi">
+							Kochi<small>Main Hub</small>
+						</button>
+						<button type="button" class="segment" data-branch="Trivandrum">
+							Trivandrum
+						</button>
+						<button type="button" class="segment" data-branch="Thrissur">
+							Thrissur
+						</button>
+						<button type="button" class="segment" data-branch="Calicut">
+							Calicut
+						</button>
+					</div>
+				</div>
+
+				<!-- wrong-branch confirm, between the selector and the terminal -->
+				<div class="branch-warn" data-warn role="alert">
+					<span data-warn-text></span>
+					<div class="branch-warn-actions">
+						<button type="button" class="linkbtn" data-warn-continue>Continue</button>
+						<button type="button" class="linkbtn is-quiet" data-warn-cancel>Cancel</button>
+					</div>
+				</div>
+
+				<!-- 3. terminal id -->
+				<div class="field">
+					<span class="field-label">Terminal</span>
+					<div class="terminal-row" data-terminal-row>
+						<span class="terminal-id" data-terminal-id>KCH-TERM-02</span>
+						<button type="button" class="linkbtn" data-terminal-change>Change</button>
+					</div>
+					<div class="terminal-edit" data-terminal-edit>
+						<input type="text" data-terminal-input aria-label="Terminal ID"
+						       spellcheck="false" autocomplete="off">
+						<button type="button" class="linkbtn" data-terminal-save>Save</button>
+					</div>
+				</div>
+
+				<!-- 4. credentials -->
+				<div class="field">
+					<label class="field-label" for="lnst-user">User ID</label>
+					<input class="field-input" id="lnst-user" type="text" data-user
+					       autocomplete="username" spellcheck="false" autocapitalize="none">
+				</div>
+
+				<div class="field">
+					<label class="field-label" for="lnst-pwd">Password</label>
+					<input class="field-input" id="lnst-pwd" type="password" data-pwd
+					       autocomplete="current-password">
+					<p class="field-error" data-error role="alert">
+						That user ID or password is not recognised. Try again or scan your badge.
+					</p>
+				</div>
+
+				<!-- 5. the way most people will actually sign in -->
+				<button type="button" class="badge-tile" data-badge-tile>
+					<svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+					     stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round"
+					     stroke-linejoin="round">
+						<path d="M3 8V5.5A2.5 2.5 0 0 1 5.5 3H8"/>
+						<path d="M16 3h2.5A2.5 2.5 0 0 1 21 5.5V8"/>
+						<path d="M21 16v2.5a2.5 2.5 0 0 1-2.5 2.5H16"/>
+						<path d="M8 21H5.5A2.5 2.5 0 0 1 3 18.5V16"/>
+						<path d="M3 12h18"/>
+					</svg>
+					<span class="badge-tile-text">
+						<span class="badge-tile-main">Scan your staff badge</span>
+						<span class="badge-tile-sub">No keyboard needed</span>
+					</span>
+				</button>
+
+				<!-- 6. primary -->
+				<button type="button" class="btn-primary" data-submit>Sign in</button>
+
+				<!-- 7. footer -->
+				<div class="signin-foot">
+					<span class="dot" aria-hidden="true"></span>
+					<span>Connected to LNST ERP</span>
+					<span class="foot-sep">v1.0.0-mock</span>
+				</div>
+			</div>
+
+			<!-- badge-scan state, over the dimmed card -->
+			<div class="scan-overlay" data-scan-overlay>
+				<div class="scan-rings">
+					<svg class="scan-icon" width="42" height="42" viewBox="0 0 24 24" fill="none"
+					     aria-hidden="true" stroke="currentColor" stroke-width="1.7"
+					     stroke-linecap="round" stroke-linejoin="round">
+						<path d="M3 8V5.5A2.5 2.5 0 0 1 5.5 3H8"/>
+						<path d="M16 3h2.5A2.5 2.5 0 0 1 21 5.5V8"/>
+						<path d="M21 16v2.5a2.5 2.5 0 0 1-2.5 2.5H16"/>
+						<path d="M8 21H5.5A2.5 2.5 0 0 1 3 18.5V16"/>
+						<path d="M3 12h18"/>
+					</svg>
+				</div>
+				<p class="scan-caption">Waiting for badge scan</p>
+				<button type="button" class="linkbtn is-quiet" data-scan-exit>
+					Use password instead
+				</button>
+				{# A reader types like a keyboard. This stays focused while scanning. #}
+				<input class="scan-catcher" data-scan-catcher aria-hidden="true" tabindex="-1"
+				       autocomplete="off" spellcheck="false">
+			</div>
+
+		</div>
+	</section>
+</main>
+
+{# ------------------------------------------------------------------------
+   Mockup only. Delete this strip and its CSS block when the screen goes live.
+   ------------------------------------------------------------------------ #}
+<div class="devstrip">
+	<span class="devstrip-label">State</span>
+	<button type="button" class="devbtn" data-dev="default">Default</button>
+	<button type="button" class="devbtn" data-dev="scan">Badge scan</button>
+	<button type="button" class="devbtn" data-dev="error">Error</button>
+	<button type="button" class="devbtn" data-dev="warn">Wrong branch</button>
+</div>
+
+<script src="/assets/lnst_portal/js/lnst_session.js?v={{ asset_v }}"></script>
+<script src="/assets/lnst_portal/js/lnst_login.js?v={{ asset_v }}"></script>
+</body>
+</html>

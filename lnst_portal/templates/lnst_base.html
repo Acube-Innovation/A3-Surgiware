@@ -1,0 +1,52 @@
+{#
+  The one base for all three modes.
+
+  Desk and terminal share a shell and differ only in density; mobile is a
+  narrow column with the same <nav> reordered to the bottom. Keeping it to one
+  file means the script list, the asset-version token and the boot contract
+  exist once — with two bases they drift, and the failure is silent (one mode
+  quietly serving a stale bundle).
+
+  A screen supplies {% block content %} and, if it needs them, {% block modals %}.
+#}
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{{ title }} · LNST Operations</title>
+	<meta name="robots" content="noindex">
+	<link rel="stylesheet" href="/assets/lnst_portal/css/lnst.css?v={{ asset_v }}">
+</head>
+<body class="mode-{{ mode }}" data-screen="{{ screen_key }}">
+
+<div class="shell">
+	{% include "lnst_portal/templates/_chrome_nav.html" %}
+	<div class="main">
+		{% include "lnst_portal/templates/_chrome_topbar.html" %}
+		<main class="content">
+			{% block content %}{% endblock %}
+		</main>
+	</div>
+</div>
+
+{% block modals %}{% endblock %}
+
+{# A wedge reader types like a keyboard; the engine keeps this focused. #}
+<input class="scan-catcher" data-scan-catcher aria-hidden="true" tabindex="-1"
+       autocomplete="off" spellcheck="false">
+
+{# Mockup only — delete with the .devstrip CSS block when this goes live. #}
+<div class="devstrip">
+	<span class="devstrip-label">Demo</span>
+	<button type="button" class="btn btn-sm" data-lnst-reset>Reset data</button>
+</div>
+
+{# Session first: it seeds window.LNST, which lnst_core.js extends. #}
+<script src="/assets/lnst_portal/js/lnst_session.js?v={{ asset_v }}"></script>
+<script src="/assets/lnst_portal/js/mock_data.js?v={{ asset_v }}"></script>
+<script src="/assets/lnst_portal/js/lnst_core.js?v={{ asset_v }}"></script>
+{% if js %}<script src="/assets/lnst_portal/js/screens/{{ js }}.js?v={{ asset_v }}"></script>{% endif %}
+<script>LNST.boot({{ boot | tojson }});</script>
+</body>
+</html>

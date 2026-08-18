@@ -1,0 +1,50 @@
+{% extends "lnst_portal/templates/lnst_base.html" %}
+
+{% block content %}
+<div class="tiles" data-kpis></div>
+
+<div class="toolbar">
+	<div class="toolbar-filters">
+		<input class="input" data-f-search placeholder="Challan no, request or hospital…">
+		<select class="input" data-f-branch></select>
+		<select class="input" data-f-state></select>
+		<select class="input" data-f-exec></select>
+		<button type="button" class="linkbtn is-quiet" data-f-clear>Clear</button>
+	</div>
+	<div class="toolbar-actions">
+		<button type="button" class="btn btn-sm" data-print>
+			{% set icon = "doc" %}{% include "lnst_portal/templates/_icons.html" %}
+			<span>Print</span>
+		</button>
+		<button type="button" class="btn btn-sm" data-excel>
+			{% set icon = "down" %}{% include "lnst_portal/templates/_icons.html" %}
+			<span>Excel</span>
+		</button>
+	</div>
+</div>
+
+<div class="req-split">
+
+	<!-- LHS: delivery number first, then the case behind it -->
+	<section class="panel">
+		<div class="panel-head">
+			<h2>Deliveries</h2>
+			<span class="spacer"></span>
+			<span class="panel-note" data-list-count></span>
+		</div>
+		<div data-list></div>
+	</section>
+
+	<!-- RHS: the handover record -->
+	<section class="panel">
+		<div class="panel-head">
+			<h2 data-detail-title>Nothing selected</h2>
+			<span class="spacer"></span>
+			<span data-detail-pill></span>
+		</div>
+		<div data-detail-head></div>
+		<div data-form></div>
+	</section>
+
+</div>
+{% endblock %}

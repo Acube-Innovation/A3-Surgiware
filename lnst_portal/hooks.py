@@ -1,7 +1,7 @@
 app_name = "lnst_portal"
 app_title = "LNST Portal"
 app_publisher = "Acube Innovations Pvt Ltd"
-app_description = "Customer and dealer portal for Lakshmi NeuroSpine Technologies"
+app_description = "Operations and portal platform for Lakshmi NeuroSpine Technologies"
 app_email = "saaspurchases@acube.co"
 app_license = "mit"
 
