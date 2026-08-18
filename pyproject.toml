@@ -3,7 +3,7 @@ name = "lnst_portal"
 authors = [
     { name = "Acube Innovations Pvt Ltd", email = "saaspurchases@acube.co"}
 ]
-description = "Customer and dealer portal for Lakshmi NeuroSpine Technologies"
+description = "Operations and portal platform for Lakshmi NeuroSpine Technologies"
 requires-python = ">=3.10"
 readme = "README.md"
 dynamic = ["version"]

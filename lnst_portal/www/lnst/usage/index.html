@@ -1,0 +1,87 @@
+{% extends "lnst_portal/templates/lnst_base.html" %}
+
+{% block content %}
+<div class="tiles" data-kpis></div>
+
+<div class="toolbar">
+	<div class="toolbar-filters">
+		<input class="input" data-f-search placeholder="Delivery no, request or hospital…">
+		<select class="input" data-f-branch></select>
+		<select class="input" data-f-state></select>
+		<button type="button" class="linkbtn is-quiet" data-f-clear>Clear</button>
+	</div>
+	<div class="toolbar-actions">
+		<button type="button" class="btn btn-sm" data-print>
+			{% set icon = "doc" %}{% include "lnst_portal/templates/_icons.html" %}
+			<span>Print</span>
+		</button>
+		<button type="button" class="btn btn-sm" data-excel>
+			{% set icon = "down" %}{% include "lnst_portal/templates/_icons.html" %}
+			<span>Excel</span>
+		</button>
+	</div>
+</div>
+
+<div class="req-split">
+	<section class="panel">
+		<div class="panel-head">
+			<h2>Delivered</h2>
+			<span class="spacer"></span>
+			<span class="panel-note" data-list-count></span>
+		</div>
+		<div data-list></div>
+	</section>
+
+	<section class="panel">
+		<div class="panel-head">
+			<h2 data-detail-title>Nothing selected</h2>
+			<span class="spacer"></span>
+			<button type="button" class="btn btn-primary btn-sm" data-open-scan disabled>
+				{% set icon = "scan" %}{% include "lnst_portal/templates/_icons.html" %}
+				<span>Scan used packets</span>
+			</button>
+		</div>
+		<div data-detail-head></div>
+		<div data-detail-lines></div>
+	</section>
+</div>
+{% endblock %}
+
+{% block modals %}
+<div class="scan-pop" data-scan-pop hidden>
+	<div class="scan-pop-box">
+		<div class="scan-pop-head">
+			<div>
+				<h2 data-scan-title>Scan used packets</h2>
+				<p class="modal-note" data-scan-sub></p>
+			</div>
+			<div class="scan-progress">
+				<div class="scan-progress-count"><b data-scan-done>0</b><span data-scan-total>/0</span></div>
+				<div class="scan-progress-label">used</div>
+			</div>
+		</div>
+
+		<div class="scan-progress-track">
+			<span class="scan-progress-fill" data-scan-bar style="width:0%"></span>
+		</div>
+
+		<div class="scanbar">
+			<span class="scan-dot" aria-hidden="true"></span>
+			<div>
+				<div class="scanbar-label">Scan every packet opened in theatre</div>
+				<div class="scanbar-value" data-scan-last>—</div>
+			</div>
+			<span class="spacer"></span>
+			<input class="scan-catcher" data-scan-catcher autocomplete="off" spellcheck="false">
+		</div>
+
+		<div class="scan-pop-list" data-scan-list></div>
+
+		<div class="modal-actions">
+			<span class="panel-note" data-scan-rest></span>
+			<span class="spacer"></span>
+			<button type="button" class="btn btn-primary" data-finish-scan>Finish</button>
+		</div>
+	</div>
+</div>
+{% endblock %}

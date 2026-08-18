@@ -1,0 +1,166 @@
+{% extends "lnst_portal/templates/lnst_base.html" %}
+
+{% block content %}
+
+{# Counts, filters, then master/detail. Everything is filled by
+   screens/requests.js from mock_data.js — nothing is server-rendered. #}
+
+<div class="tiles" data-kpis></div>
+
+<div class="toolbar">
+	<div class="toolbar-filters">
+		<input class="input" data-f-search placeholder="Request no, hospital or surgeon…">
+		<select class="input" data-f-branch></select>
+		<select class="input" data-f-status></select>
+		<select class="input" data-f-priority></select>
+		<select class="input" data-f-exec></select>
+		<button type="button" class="linkbtn is-quiet" data-f-clear>Clear</button>
+	</div>
+	<div class="toolbar-actions">
+		<button type="button" class="btn btn-sm" data-print>
+			{% set icon = "doc" %}{% include "lnst_portal/templates/_icons.html" %}
+			<span>Print</span>
+		</button>
+		<button type="button" class="btn btn-sm" data-excel>
+			{% set icon = "down" %}{% include "lnst_portal/templates/_icons.html" %}
+			<span>Excel</span>
+		</button>
+	</div>
+</div>
+
+<div class="req-split">
+
+	<!-- LHS: the requests that came to this warehouse -->
+	<section class="panel">
+		<div class="panel-head">
+			<h2 data-panel-heading>Requests</h2>
+			<span class="spacer"></span>
+			<span class="panel-note" data-list-count></span>
+			<a class="panel-note" data-scope-link href="/lnst/my-requests">My requests</a>
+		</div>
+		<div data-list></div>
+	</section>
+
+	<!-- RHS: the one that is open, and its lines -->
+	<section class="panel" data-detail-panel>
+		<div class="panel-head">
+			<h2 data-detail-title>Nothing selected</h2>
+			<span class="spacer"></span>
+			{# Which of these shows is the scope's call — see SCOPES in the JS. #}
+			<button type="button" class="btn btn-primary btn-sm" data-open-scan disabled hidden>
+				{% set icon = "scan" %}{% include "lnst_portal/templates/_icons.html" %}
+				<span>Scan items</span>
+			</button>
+			<button type="button" class="btn btn-sm" data-print-dc disabled hidden>
+				{% set icon = "doc" %}{% include "lnst_portal/templates/_icons.html" %}
+				<span>Print delivery challan</span>
+			</button>
+			<button type="button" class="btn btn-primary btn-sm" data-add-vehicle disabled hidden>
+				{% set icon = "truck" %}{% include "lnst_portal/templates/_icons.html" %}
+				<span>Add delivery vehicle</span>
+			</button>
+		</div>
+		<div data-detail-head></div>
+		<div data-dc-block></div>
+		<div data-detail-lines></div>
+	</section>
+
+</div>
+{% endblock %}
+
+
+{% block modals %}
+{# The scan popup. Its own overlay rather than LNST.ui.modal, because that one
+   pauses the scan engine on open — here the engine has to stay live. #}
+<div class="scan-pop" data-scan-pop hidden>
+	<div class="scan-pop-box">
+		<div class="scan-pop-head">
+			<div>
+				<h2 data-scan-title>Scan items</h2>
+				<p class="modal-note" data-scan-sub></p>
+			</div>
+			<div class="scan-progress">
+				<div class="scan-progress-count"><b data-scan-done>0</b><span data-scan-total>/0</span></div>
+				<div class="scan-progress-label">scanned</div>
+			</div>
+		</div>
+
+		<div class="scan-progress-track">
+			<span class="scan-progress-fill" data-scan-bar style="width:0%"></span>
+		</div>
+
+		<div class="scanbar">
+			<span class="scan-dot" aria-hidden="true"></span>
+			<div>
+				<div class="scanbar-label">Ready — scan a serial, or use the buttons below</div>
+				<div class="scanbar-value" data-scan-last>—</div>
+			</div>
+			<span class="spacer"></span>
+			<input class="scan-catcher" data-scan-catcher autocomplete="off" spellcheck="false">
+		</div>
+
+		<div class="scan-pop-list" data-scan-list></div>
+
+		<div class="modal-actions">
+			<button type="button" class="btn btn-primary" data-close-scan>Close</button>
+		</div>
+	</div>
+</div>
+
+{# ---------------------------------------------------------------- vehicle #}
+<div class="scan-pop" data-veh-pop hidden>
+	<div class="scan-pop-box is-narrow">
+		<div class="scan-pop-head">
+			<div>
+				<h2>Add delivery vehicle</h2>
+				<p class="modal-note" data-veh-sub></p>
+			</div>
+		</div>
+
+		<div class="field-row">
+			<div class="field">
+				<label class="field-label">Vehicle <span class="req">*</span></label>
+				<select class="input" data-veh-vehicle></select>
+			</div>
+			<div class="field">
+				<label class="field-label">Delivery staff <span class="req">*</span></label>
+				<select class="input" data-veh-staff></select>
+			</div>
+		</div>
+
+		<div class="field-row">
+			<div class="field">
+				<label class="field-label">Out time</label>
+				<input class="input" type="time" data-veh-out value="07:30">
+			</div>
+			<div class="field">
+				<label class="field-label">Expected return</label>
+				<input class="input" type="date" data-veh-return>
+			</div>
+		</div>
+
+		<div class="field">
+			<label class="field-label">e-Way bill</label>
+			<input class="input" data-veh-eway placeholder="Optional">
+		</div>
+
+		<p class="field-error" data-veh-error></p>
+
+		<div class="modal-actions">
+			<button type="button" class="btn" data-veh-cancel>Cancel</button>
+			<button type="button" class="btn btn-primary" data-veh-save>Save and raise challan</button>
+		</div>
+	</div>
+</div>
+
+{# ------------------------------------------------------- challan printout #}
+<div class="scan-pop dc-pop" data-dc-pop hidden>
+	<div class="scan-pop-box is-wide">
+		<div data-dc-doc></div>
+		<div class="modal-actions dc-pop-actions">
+			<button type="button" class="btn" data-dc-close>Close</button>
+			<button type="button" class="btn btn-primary" data-dc-print>Print</button>
+		</div>
+	</div>
+</div>
+{% endblock %}

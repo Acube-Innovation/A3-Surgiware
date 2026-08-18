@@ -1,0 +1,90 @@
+{% extends "lnst_portal/templates/lnst_base.html" %}
+
+{% block content %}
+<div class="tiles" data-kpis></div>
+
+<div class="toolbar">
+	<div class="toolbar-filters">
+		<input class="input" data-f-search placeholder="Delivery no, hospital…">
+		<select class="input" data-f-branch></select>
+		<select class="input" data-f-state></select>
+		<button type="button" class="linkbtn is-quiet" data-f-clear>Clear</button>
+	</div>
+	<div class="toolbar-actions">
+		<button type="button" class="btn btn-sm" data-print>
+			{% set icon = "doc" %}{% include "lnst_portal/templates/_icons.html" %}
+			<span>Print</span>
+		</button>
+		<button type="button" class="btn btn-sm" data-excel>
+			{% set icon = "down" %}{% include "lnst_portal/templates/_icons.html" %}
+			<span>Excel</span>
+		</button>
+	</div>
+</div>
+
+<div class="req-split">
+	<section class="panel">
+		<div class="panel-head">
+			<h2>Coming back</h2>
+			<span class="spacer"></span>
+			<span class="panel-note" data-list-count></span>
+		</div>
+		<div data-list></div>
+	</section>
+
+	<section class="panel">
+		<div class="panel-head">
+			<h2 data-detail-title>Nothing selected</h2>
+			<span class="spacer"></span>
+			<button type="button" class="btn btn-primary btn-sm" data-open-putaway disabled>
+				{% set icon = "down" %}{% include "lnst_portal/templates/_icons.html" %}
+				<span>Start put-away</span>
+			</button>
+		</div>
+		<div data-detail-head></div>
+		<div data-detail-lines></div>
+	</section>
+</div>
+{% endblock %}
+
+{% block modals %}
+<div class="scan-pop" data-put-pop hidden>
+	<div class="scan-pop-box">
+		<div class="scan-pop-head">
+			<div>
+				<h2 data-put-title>Put-away</h2>
+				<p class="modal-note" data-put-sub></p>
+			</div>
+			<div class="scan-progress">
+				<div class="scan-progress-count"><b data-put-done>0</b><span data-put-total>/0</span></div>
+				<div class="scan-progress-label">shelved</div>
+			</div>
+		</div>
+
+		<div class="scan-progress-track">
+			<span class="scan-progress-fill" data-put-bar style="width:0%"></span>
+		</div>
+
+		{# The rack is the mode: nothing can be shelved until one is open. #}
+		<div class="scanbar" data-rack-bar>
+			<span class="scan-dot" aria-hidden="true"></span>
+			<div>
+				<div class="scanbar-label" data-put-prompt>Scan a rack to begin</div>
+				<div class="scanbar-value" data-put-rack>No rack open</div>
+			</div>
+			<span class="spacer"></span>
+			<button type="button" class="btn btn-sm" data-close-rack hidden>Close rack</button>
+			<input class="scan-catcher" data-scan-catcher autocomplete="off" spellcheck="false">
+		</div>
+
+		<div class="scan-pop-list" data-put-list></div>
+
+		<div class="modal-actions">
+			<span class="panel-note" data-put-rest></span>
+			<span class="spacer"></span>
+			<button type="button" class="btn" data-put-close>Close</button>
+			<button type="button" class="btn btn-primary" data-put-finish>Finish put-away</button>
+		</div>
+	</div>
+</div>
+{% endblock %}

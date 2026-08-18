@@ -1,0 +1,1056 @@
+/* Copyright (c) 2026, Acube Innovations Pvt Ltd and contributors
+ *
+ * LNST Inventory & Operations Platform — the one stylesheet.
+ *
+ * Standalone: these pages do not extend ERPNext's web template, so nothing from
+ * the desk leaks in and nothing here leaks out. The class vocabulary follows
+ * a3_retail's branch app (.pill, .bill-table, .row-list, .toast) so the two read
+ * as one family; only the palette is LNST's.
+ *
+ * THREE MODES, TWO SHELLS. mode-desk and mode-terminal share the sidebar shell
+ * and differ only in density (--tap). mode-mobile is a narrow column with a
+ * bottom nav — that one is net-new, because a3_retail has no mobile pattern at
+ * all. Mode is a property of the screen, not the viewport: /lnst/my-day must
+ * look like a phone on a 1920px demo laptop.
+ */
+
+:root {
+	--navy: #0F2A47;
+	--blue: #0E7FC0;
+	--amber: #E8A317;
+	--stop: #C0392B;
+	--go: #1E8E5A;
+	--surface: #F4F6F8;
+	--line: #DDE3E9;
+	--ink: #1B2733;
+	--muted: #6B7A88;
+
+	/* Derived. Every tint below is one of the nine above at low alpha, so the
+	   palette stays closed. */
+	--navy-soft: rgba(15, 42, 71, .06);
+	--blue-soft: rgba(14, 127, 192, .10);
+	--amber-soft: rgba(232, 163, 23, .13);
+	--stop-soft: rgba(192, 57, 43, .10);
+	--go-soft: rgba(30, 142, 90, .12);
+
+	--card: #fff;
+	--tap: 44px;              /* desk. terminal raises it. */
+	--radius: 10px;
+	--radius-sm: 6px;
+	--radius-pill: 999px;
+	--shadow-card: 0 10px 34px -14px rgba(15, 42, 71, .28);
+	--shadow-pop: 0 18px 50px -18px rgba(15, 42, 71, .4);
+
+	--sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+		"Helvetica Neue", Arial, sans-serif;
+	--mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+[hidden] { display: none !important; }
+
+body {
+	font-family: var(--sans);
+	font-size: 15px;
+	line-height: 1.5;
+	color: var(--ink);
+	background: var(--surface);
+	-webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ========================================================== shell: desk +
+   terminal. One grid, sticky rail, sticky topbar. */
+
+.shell { min-height: 100vh; display: grid; grid-template-columns: 248px 1fr; }
+
+.lnst-nav {
+	background: var(--navy);
+	color: #fff;
+	padding: 18px 14px;
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+	position: sticky;
+	top: 0;
+	height: 100vh;
+	overflow-y: auto;
+}
+
+.nav-brand { display: block; padding: 0 6px 4px; color: #fff; }
+
+.nav-group { display: flex; flex-direction: column; gap: 2px; }
+
+.nav-group-label {
+	font-size: 10px;
+	letter-spacing: .1em;
+	text-transform: uppercase;
+	color: #fff;
+	opacity: .45;
+	padding: 10px 10px 4px;
+}
+
+.nav-link {
+	display: flex;
+	align-items: center;
+	gap: 11px;
+	min-height: var(--tap);
+	padding: 8px 11px;
+	border-radius: var(--radius-sm);
+	color: #fff;
+	font-size: 14px;
+	opacity: .78;
+}
+
+.nav-link:hover { background: rgba(255, 255, 255, .09); opacity: 1; text-decoration: none; }
+.nav-link.is-active { background: var(--blue); opacity: 1; font-weight: 600; }
+.nav-link .ico { width: 17px; height: 17px; flex: 0 0 17px; }
+.nav-foot { margin-top: auto; font-size: 11px; opacity: .5; padding: 0 8px; }
+
+.main { display: flex; flex-direction: column; min-width: 0; }
+
+.topbar {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 12px 22px;
+	background: var(--card);
+	border-bottom: 1px solid var(--line);
+	position: sticky;
+	top: 0;
+	z-index: 5;
+}
+
+.topbar h1 { margin: 0; font-size: 17px; font-weight: 650; letter-spacing: -.01em; }
+.topbar-sub { font-size: 12px; color: var(--muted); }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+
+.content { padding: 20px 22px 60px; min-width: 0; }
+
+/* Terminal is the desk shell at scan density, not a third shell.
+ *
+ * Density stops at the chrome. A scan screen needs big targets in the work
+ * area and in the scan popup, but the sidebar and topbar are navigation — if
+ * they grew too, the rail would read differently from screen to screen and the
+ * app would stop feeling like one place. So the token is reset inside the
+ * chrome and the button rule is scoped to where the hands actually go. */
+.mode-terminal { --tap: 56px; }
+.mode-terminal .content { padding: 22px 24px 70px; }
+.mode-terminal .bill-table { font-size: 14px; }
+.mode-terminal .bill-table td { padding: 13px 10px; }
+.mode-terminal .content .btn,
+.mode-terminal .scan-pop .btn { min-height: 52px; font-size: 15px; }
+
+/* Chrome keeps desk density in every mode. */
+.lnst-nav, .topbar { --tap: 44px; }
+.lnst-nav .btn, .topbar .btn { min-height: 32px; font-size: 13px; }
+
+/* ============================================================ shell: mobile.
+   A phone column, centred and framed, so it reads as a phone on a laptop. */
+
+.mode-mobile { background: #E8ECF1; }
+
+.mode-mobile .shell {
+	display: flex;
+	flex-direction: column;
+	grid-template-columns: none;
+	max-width: 430px;
+	margin: 0 auto;
+	min-height: 100vh;
+	background: var(--surface);
+	box-shadow: 0 0 0 1px var(--line), 0 22px 60px -24px rgba(15, 42, 71, .45);
+}
+
+.mode-mobile .topbar { padding: 12px 16px; }
+.mode-mobile .topbar h1 { font-size: 16px; }
+.mode-mobile .content { padding: 14px 14px 96px; flex: 1; }
+
+/* The same <nav> element, reordered to the bottom and laid out in a row. */
+.mode-mobile .lnst-nav {
+	order: 99;
+	position: sticky;
+	bottom: 0;
+	top: auto;
+	height: auto;
+	flex-direction: row;
+	gap: 0;
+	padding: 0;
+	overflow: visible;
+	border-top: 1px solid rgba(255, 255, 255, .12);
+}
+
+.mode-mobile .nav-brand,
+.mode-mobile .nav-group-label,
+.mode-mobile .nav-foot { display: none; }
+
+.mode-mobile .nav-group { flex-direction: row; flex: 1; gap: 0; }
+
+.mode-mobile .nav-link {
+	flex: 1;
+	flex-direction: column;
+	gap: 3px;
+	min-height: 58px;
+	justify-content: center;
+	border-radius: 0;
+	font-size: 10.5px;
+	padding: 7px 2px;
+}
+
+.mode-mobile .nav-link.is-active { background: transparent; color: #fff; opacity: 1; }
+.mode-mobile .nav-link.is-active .ico { color: var(--amber); }
+.mode-mobile .nav-link .ico { width: 20px; height: 20px; flex: 0 0 20px; }
+
+/* On a real handset drop the frame and go full bleed. */
+@media (max-width: 480px) {
+	.mode-mobile { background: var(--surface); }
+	.mode-mobile .shell { max-width: none; box-shadow: none; }
+}
+
+/* The floating compose action — New Out-Request is a verb, not a place, so it
+   does not get one of the five bottom-nav slots. */
+.fab {
+	position: fixed;
+	right: calc(50% - 215px + 16px);
+	bottom: 74px;
+	width: 54px;
+	height: 54px;
+	border-radius: 50%;
+	border: 0;
+	background: var(--blue);
+	color: #fff;
+	font-size: 26px;
+	line-height: 1;
+	cursor: pointer;
+	box-shadow: var(--shadow-pop);
+	z-index: 6;
+}
+
+@media (max-width: 480px) { .fab { right: 16px; } }
+
+/* ==================================================================== cards */
+
+.panel {
+	background: var(--card);
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	padding: 16px 18px;
+	margin-bottom: 14px;
+}
+
+.panel-head {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: -2px 0 12px;
+}
+
+.panel-head h2 { margin: 0; font-size: 14px; font-weight: 650; }
+.panel-head .spacer { margin-left: auto; }
+.panel-note { font-size: 12px; color: var(--muted); }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+
+.tile {
+	background: var(--card);
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	padding: 14px 16px;
+}
+
+.tile-label { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+.tile-value { font-size: 26px; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.tile-foot { font-size: 11.5px; color: var(--muted); }
+.tile.is-warn .tile-value { color: var(--amber); }
+.tile.is-bad .tile-value { color: var(--stop); }
+.tile.is-good .tile-value { color: var(--go); }
+
+/* =================================================================== tables */
+
+.table-wrap { overflow-x: auto; }
+
+.bill-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+
+.bill-table th {
+	text-align: left;
+	white-space: nowrap;
+	padding: 10px 8px;
+	font-size: 10.5px;
+	font-weight: 700;
+	letter-spacing: .04em;
+	text-transform: uppercase;
+	color: var(--muted);
+	background: var(--surface);
+	border-bottom: 1px solid var(--line);
+}
+
+.bill-table td { padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.bill-table tbody tr:hover { background: var(--navy-soft); }
+.bill-table td.num, .bill-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.bill-table td.strong { font-weight: 650; }
+.bill-table td small { display: block; color: var(--muted); font-size: 10.5px; }
+.bill-table .sn { font-family: var(--mono); font-size: 11.5px; }
+.bill-table tbody tr.is-void { color: var(--muted); background: var(--stop-soft); }
+
+.doc-no { font-weight: 650; color: var(--blue); white-space: nowrap; }
+
+/* Narrow-panel row list — the mobile list primitive. */
+.row-list { display: flex; flex-direction: column; }
+
+.row-line {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	gap: 4px 10px;
+	align-items: center;
+	padding: 12px 0;
+	border-bottom: 1px solid var(--line);
+	min-height: var(--tap);
+}
+
+.row-line:last-child { border-bottom: 0; }
+.row-main { min-width: 0; }
+.row-main b { display: block; font-weight: 600; color: var(--ink); }
+.row-main small { display: block; color: var(--muted); font-size: 11.5px; }
+.row-line .pill { justify-self: end; }
+
+/* ==================================================================== pills */
+
+.pill {
+	display: inline-block;
+	font-size: 10.5px;
+	font-weight: 700;
+	border-radius: var(--radius-pill);
+	padding: 3px 9px;
+	white-space: nowrap;
+}
+
+.pill-good  { background: var(--go-soft);    color: var(--go); }
+.pill-bad   { background: var(--stop-soft);  color: var(--stop); }
+.pill-warn  { background: var(--amber-soft); color: #8a5d00; }
+.pill-sky   { background: var(--blue-soft);  color: var(--blue); }
+.pill-navy  { background: var(--navy-soft);  color: var(--navy); }
+.pill-muted { background: var(--surface);    color: var(--muted); border: 1px solid var(--line); }
+
+/* Availability signal on request lines: green / amber / red. */
+.avail { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; }
+.avail::before { content: ""; width: 8px; height: 8px; border-radius: 50%; }
+.avail-ok::before   { background: var(--go); }
+.avail-low::before  { background: var(--amber); }
+.avail-none::before { background: var(--stop); }
+
+/* =================================================================== forms */
+
+.field { margin-bottom: 13px; }
+.field-label { display: block; margin-bottom: 5px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.field-label .req { color: var(--stop); }
+
+.input, select.input, textarea.input {
+	width: 100%;
+	min-height: var(--tap);
+	padding: 9px 12px;
+	font: inherit;
+	font-size: 14px;
+	color: var(--ink);
+	background: var(--card);
+	border: 1px solid var(--line);
+	border-radius: var(--radius-sm);
+	outline: none;
+}
+
+.input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-soft); }
+.input[readonly] { background: var(--surface); color: var(--muted); }
+.input.is-bad { border-color: var(--stop); box-shadow: 0 0 0 3px var(--stop-soft); }
+textarea.input { min-height: 76px; resize: vertical; }
+
+.field-error { margin: 6px 0 0; font-size: 12px; color: var(--stop); }
+.field-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0 14px; }
+
+.segmented { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+	border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
+.segment { appearance: none; border: 0; border-left: 1px solid var(--line); background: var(--card);
+	color: var(--muted); font: inherit; font-size: 13px; min-height: var(--tap); cursor: pointer; }
+.segment:first-child { border-left: 0; }
+.segment.is-on { background: var(--navy); color: #fff; font-weight: 600; }
+
+/* ================================================================= buttons */
+
+.btn {
+	appearance: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	min-height: var(--tap);
+	padding: 0 18px;
+	border: 1px solid var(--line);
+	border-radius: var(--radius-sm);
+	background: var(--card);
+	color: var(--ink);
+	font: inherit;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.btn:hover { background: var(--surface); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn-primary { background: var(--blue); border-color: var(--blue); color: #fff; }
+.btn-primary:hover { filter: brightness(1.07); background: var(--blue); }
+.btn-navy { background: var(--navy); border-color: var(--navy); color: #fff; }
+.btn-danger { background: var(--stop); border-color: var(--stop); color: #fff; }
+.btn-ghost { background: transparent; border-color: transparent; color: var(--blue); }
+.btn-block { width: 100%; }
+.btn-sm { min-height: 32px; padding: 0 11px; font-size: 12.5px; }
+
+.linkbtn { appearance: none; background: none; border: 0; padding: 0; font: inherit;
+	font-size: 13px; font-weight: 600; color: var(--blue); cursor: pointer;
+	text-decoration: underline; text-underline-offset: 2px; }
+.linkbtn.is-quiet { color: var(--muted); font-weight: 500; }
+
+/* ==================================================================== scan */
+
+.scanbar {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 13px 16px;
+	background: var(--navy);
+	color: #fff;
+	border-radius: var(--radius);
+	margin-bottom: 14px;
+}
+
+.scanbar-label { font-size: 12px; opacity: .75; }
+.scanbar-value { font-family: var(--mono); font-size: 15px; font-weight: 600; }
+.scanbar .spacer { margin-left: auto; }
+
+/* Off-screen but focused: a wedge reader types like a keyboard. */
+.scan-catcher { position: absolute; opacity: 0; width: 1px; height: 1px; border: 0; padding: 0;
+	pointer-events: none; }
+
+.scan-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--go);
+	animation: lnst-blink 1.6s ease-in-out infinite; }
+
+@keyframes lnst-blink { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+
+/* Green tick when a row registers, then the engine advances. */
+.scan-row.is-hit { background: var(--go-soft) !important; animation: lnst-hit .42s ease-out; }
+
+@keyframes lnst-hit {
+	0%   { background: var(--go-soft); transform: translateX(0); }
+	22%  { transform: translateX(3px); }
+	100% { background: transparent; transform: translateX(0); }
+}
+
+.tick { display: inline-flex; width: 20px; height: 20px; border-radius: 50%; background: var(--go);
+	color: #fff; align-items: center; justify-content: center; font-size: 12px; }
+
+@media (prefers-reduced-motion: reduce) {
+	.scan-row.is-hit, .scan-dot { animation: none; }
+}
+
+/* ================================================= modal, sheet, toast, empty */
+
+.modal-back { position: fixed; inset: 0; background: rgba(15, 42, 71, .45); z-index: 40;
+	display: flex; align-items: center; justify-content: center; padding: 20px; }
+
+.modal {
+	background: var(--card);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow-pop);
+	width: 100%;
+	max-width: 480px;
+	max-height: 86vh;
+	overflow: auto;
+	padding: 20px 22px;
+}
+
+.modal.is-wide { max-width: 760px; }
+.modal h2 { margin: 0 0 6px; font-size: 17px; color: var(--navy); }
+.modal-note { margin: 0 0 14px; font-size: 13px; color: var(--muted); }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+
+/* Mobile prefers a bottom sheet to a centred box. */
+.mode-mobile .modal-back { align-items: flex-end; padding: 0; }
+.mode-mobile .modal { max-width: none; border-radius: var(--radius) var(--radius) 0 0; }
+
+.toast-root { position: fixed; left: 50%; transform: translateX(-50%); bottom: 22px; z-index: 60;
+	display: flex; flex-direction: column; gap: 8px; align-items: center; }
+
+.toast {
+	background: var(--navy);
+	color: #fff;
+	padding: 11px 18px;
+	border-radius: var(--radius-pill);
+	font-size: 13.5px;
+	box-shadow: var(--shadow-pop);
+	animation: lnst-rise .18s ease-out;
+}
+
+.toast.is-ok  { background: var(--go); }
+.toast.is-bad { background: var(--stop); }
+.toast.is-warn{ background: var(--amber); color: var(--ink); }
+
+@keyframes lnst-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; } }
+
+.empty { padding: 40px 16px; text-align: center; color: var(--muted); }
+.empty b { display: block; font-size: 14px; color: var(--ink); margin-bottom: 4px; }
+
+/* ================================================================== landing */
+
+.landing { max-width: 1040px; margin: 0 auto; padding: 54px 22px 70px; }
+.landing-head { text-align: center; margin-bottom: 34px; color: var(--navy); }
+.landing-head .mark-lnst { color: var(--navy); }
+.landing-head p { color: var(--muted); margin: 10px 0 0; }
+
+.role-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+
+.role-card {
+	background: var(--card);
+	border: 1px solid var(--line);
+	border-top: 3px solid var(--blue);
+	border-radius: var(--radius);
+	padding: 20px 22px 16px;
+	display: flex;
+	flex-direction: column;
+}
+
+.role-card.is-exec  { border-top-color: var(--blue); }
+.role-card.is-wh    { border-top-color: var(--amber); }
+.role-card.is-desk  { border-top-color: var(--navy); }
+.role-card h2 { margin: 0 0 2px; font-size: 17px; color: var(--navy); }
+.role-card .role-sub { font-size: 12.5px; color: var(--muted); margin-bottom: 14px; }
+
+.role-links { display: flex; flex-direction: column; gap: 1px; margin-bottom: 4px; }
+
+.role-links a {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	padding: 9px 10px;
+	border-radius: var(--radius-sm);
+	color: var(--ink);
+	font-size: 13.5px;
+}
+
+.role-links a:hover { background: var(--surface); text-decoration: none; color: var(--blue); }
+.role-links .ico { width: 16px; height: 16px; flex: 0 0 16px; color: var(--muted); }
+.role-links .soon { margin-left: auto; font-size: 10px; color: var(--muted);
+	text-transform: uppercase; letter-spacing: .06em; }
+
+/* ============================================================== dev strip */
+
+/* Not product. Deleted when this stops being a mockup. */
+.devstrip {
+	position: fixed; right: 14px; bottom: 14px; z-index: 70;
+	display: flex; align-items: center; gap: 6px;
+	padding: 7px 9px; background: var(--card);
+	border: 1px solid var(--line); border-radius: var(--radius-sm);
+	box-shadow: var(--shadow-card); font-size: 12px;
+}
+
+.devstrip-label { font-size: 10px; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.devstrip select { font: inherit; font-size: 12px; border: 1px solid var(--line);
+	border-radius: 3px; padding: 4px 6px; background: var(--card); color: var(--ink); }
+.mode-mobile .devstrip { bottom: 74px; }
+
+/* ====================================================== dashboard overview */
+
+.split { display: grid; grid-template-columns: 1.15fr 1fr; gap: 14px; align-items: start; }
+
+@media (max-width: 1100px) { .split { grid-template-columns: 1fr; } }
+
+/* The attention list rows are links, so they need the anchor reset undone. */
+a.row-line { color: inherit; text-decoration: none; }
+a.row-line:hover { background: var(--surface); text-decoration: none; }
+a.row-line:hover .row-main b { color: var(--blue); }
+
+/* A bar chart with no library: a track, a fill, a number. */
+.bars { display: flex; flex-direction: column; gap: 7px; }
+
+.bar-row {
+	display: grid;
+	grid-template-columns: 132px 1fr 30px;
+	align-items: center;
+	gap: 10px;
+	font-size: 12.5px;
+}
+
+.bar-label { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-track { height: 9px; background: var(--surface); border-radius: var(--radius-pill); overflow: hidden; }
+.bar-fill { display: block; height: 100%; border-radius: var(--radius-pill); background: var(--blue); }
+.bar-n { text-align: right; font-variant-numeric: tabular-nums; font-weight: 650; }
+
+.bar-good  { background: var(--go); }
+.bar-warn  { background: var(--amber); }
+.bar-bad   { background: var(--stop); }
+.bar-sky   { background: var(--blue); }
+.bar-muted { background: var(--muted); }
+
+/* Role cards sit inside a panel on the overview, so they lose their own frame. */
+.panel .role-cards { gap: 14px; }
+.panel .role-card { border: 1px solid var(--line); border-top-width: 3px; }
+
+/* ============================================================ requests page */
+
+.toolbar {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+	margin-bottom: 14px;
+}
+
+.toolbar-filters { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; flex: 1; }
+.toolbar-filters .input { min-height: 38px; font-size: 13px; width: auto; min-width: 148px; }
+.toolbar-filters .input[data-f-search] { min-width: 250px; flex: 0 1 300px; }
+.toolbar-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.toolbar-actions .ico { width: 15px; height: 15px; }
+
+/* The filter row is a form, not a scan surface: Print and Excel match the
+   height of the inputs beside them rather than the 52px scan buttons. */
+.mode-terminal .toolbar .btn { min-height: 38px; font-size: 13px; }
+
+/* Master on the left, the open request on the right. */
+.req-split { display: grid; grid-template-columns: 1fr 1.15fr; gap: 14px; align-items: start; }
+
+@media (max-width: 1180px) { .req-split { grid-template-columns: 1fr; } }
+
+.bill-table tr.is-clickable { cursor: pointer; }
+.bill-table tr.is-open { background: var(--blue-soft); }
+.bill-table tr.is-open td { border-bottom-color: var(--blue); }
+.bill-table tr.is-open td:first-child { box-shadow: inset 3px 0 0 var(--blue); }
+
+/* The request header block. */
+.kv {
+	display: grid;
+	grid-template-columns: 104px 1fr;
+	gap: 5px 12px;
+	margin: 0 0 14px;
+	font-size: 12.5px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid var(--line);
+}
+
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; }
+
+/* ------------------------------------------------------------ scan popup */
+
+.scan-pop {
+	position: fixed;
+	inset: 0;
+	z-index: 50;
+	background: rgba(15, 42, 71, .5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 22px;
+}
+
+.scan-pop-box {
+	background: var(--card);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow-pop);
+	width: 100%;
+	max-width: 680px;
+	max-height: 88vh;
+	display: flex;
+	flex-direction: column;
+	padding: 20px 22px 18px;
+}
+
+.scan-pop-head { display: flex; align-items: flex-start; gap: 18px; }
+.scan-pop-head h2 { margin: 0 0 2px; font-size: 18px; color: var(--navy); }
+.scan-pop-head .modal-note { margin: 0; }
+
+.scan-progress { margin-left: auto; text-align: right; }
+.scan-progress-count { font-size: 26px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.scan-progress-count b { color: var(--go); }
+.scan-progress-count span { color: var(--muted); font-weight: 600; }
+.scan-progress-label { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+
+.scan-progress-track {
+	height: 6px;
+	background: var(--surface);
+	border-radius: var(--radius-pill);
+	margin: 12px 0 14px;
+	overflow: hidden;
+}
+
+.scan-progress-fill {
+	display: block;
+	height: 100%;
+	background: var(--go);
+	border-radius: var(--radius-pill);
+	transition: width .25s ease;
+}
+
+.scan-pop-list { overflow-y: auto; flex: 1; margin: 4px -4px 0; padding: 0 4px; }
+
+.scan-line {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto auto;
+	align-items: center;
+	gap: 12px;
+	padding: 10px 8px;
+	border-bottom: 1px solid var(--line);
+	border-radius: var(--radius-sm);
+}
+
+.scan-line .sn { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.scan-line.is-done { background: var(--go-soft); }
+.scan-line.is-done .row-main b { color: var(--go); }
+.scan-line.is-none { background: var(--stop-soft); }
+
+@media print {
+	.lnst-nav, .toolbar-actions, .devstrip, .scan-pop, [data-open-scan] { display: none !important; }
+	.shell { grid-template-columns: 1fr; }
+	.req-split { grid-template-columns: 1fr 1fr; }
+	.panel { break-inside: avoid; border-color: #999; }
+	.topbar { position: static; }
+}
+
+/* ================================================= dispatch: challan + vehicle */
+
+.scan-pop-box.is-narrow { max-width: 520px; }
+.scan-pop-box.is-wide { max-width: 860px; }
+
+.dc-none {
+	padding: 12px 14px;
+	margin-bottom: 14px;
+	background: var(--amber-soft);
+	border: 1px solid var(--amber);
+	border-radius: var(--radius-sm);
+	font-size: 12.5px;
+}
+
+.dc-card {
+	border: 1px solid var(--line);
+	border-left: 3px solid var(--go);
+	border-radius: var(--radius-sm);
+	padding: 12px 14px 4px;
+	margin-bottom: 14px;
+	background: var(--surface);
+}
+
+.dc-card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.dc-card .kv { border-bottom: 0; padding-bottom: 0; margin-bottom: 8px; }
+
+/* -------------------------------------------------------- the printed sheet */
+
+.dc-doc { font-size: 12.5px; color: var(--ink); }
+
+.dc-doc-top {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	padding-bottom: 12px;
+	border-bottom: 2px solid var(--navy);
+	margin-bottom: 14px;
+}
+
+.dc-doc-top b { font-size: 15px; color: var(--navy); }
+.dc-doc-right { text-align: right; }
+.dc-doc-small { font-size: 11px; color: var(--muted); }
+
+.dc-doc-parties {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 14px;
+	margin-bottom: 14px;
+}
+
+.dc-doc-parties span {
+	display: block;
+	font-size: 10px;
+	text-transform: uppercase;
+	letter-spacing: .07em;
+	color: var(--muted);
+	margin-bottom: 2px;
+}
+
+.dc-doc-parties b { display: block; }
+.dc-doc-parties div { font-size: 11.5px; color: var(--muted); }
+.dc-doc-table tfoot td { background: var(--surface); border-top: 2px solid var(--line); }
+
+.dc-doc-sign {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 20px;
+	margin-top: 34px;
+	font-size: 11px;
+	color: var(--muted);
+}
+
+.dc-doc-sign div { border-top: 1px solid var(--line); padding-top: 5px; }
+
+/* Print the challan alone: everything else steps out of the way. */
+@media print {
+	body.printing-dc .shell,
+	body.printing-dc .devstrip,
+	body.printing-dc .toast-root,
+	body.printing-dc .scan-pop:not(.dc-pop) { display: none !important; }
+
+	body.printing-dc .dc-pop {
+		position: static;
+		background: none;
+		padding: 0;
+		display: block;
+	}
+
+	body.printing-dc .dc-pop .scan-pop-box {
+		max-width: none;
+		max-height: none;
+		box-shadow: none;
+		padding: 0;
+	}
+
+	body.printing-dc .dc-pop-actions { display: none !important; }
+}
+
+/* ========================================== delivery confirmation: proof */
+
+.field-hint { display: block; margin-top: 4px; font-size: 11px; color: var(--muted); }
+
+.photo-drop {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 2px;
+	min-height: 76px;
+	padding: 14px;
+	border: 1.5px dashed var(--line);
+	border-radius: var(--radius-sm);
+	background: var(--surface);
+	cursor: pointer;
+	text-align: center;
+	font-size: 13.5px;
+	font-weight: 600;
+	color: var(--navy);
+}
+
+.photo-drop:hover { border-color: var(--blue); background: var(--blue-soft); }
+.photo-drop-sub { font-size: 11.5px; font-weight: 400; color: var(--muted); }
+
+.photo-strip { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+
+.photo-strip img {
+	width: 74px;
+	height: 74px;
+	object-fit: cover;
+	border: 1px solid var(--line);
+	border-radius: var(--radius-sm);
+}
+
+/* ------------------------------------------------------------- signature */
+
+.sig-wrap { position: relative; }
+
+.sig-pad {
+	display: block;
+	width: 100%;
+	height: 150px;
+	background: var(--card);
+	border: 1px solid var(--line);
+	border-radius: var(--radius-sm);
+	/* Without this a finger drag scrolls the page instead of drawing. */
+	touch-action: none;
+	cursor: crosshair;
+}
+
+.sig-pad:hover { border-color: var(--blue); }
+.sig-clear { position: absolute; right: 10px; bottom: 8px; }
+
+.sig-shown { margin-top: 4px; }
+.sig-shown img {
+	display: block;
+	max-width: 260px;
+	border: 1px solid var(--line);
+	border-radius: var(--radius-sm);
+	background: var(--card);
+}
+
+/* ================================================= usage tallies + put-away */
+
+.usage-tally { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 8px; }
+
+.tally {
+	text-align: center;
+	padding: 8px 4px;
+	background: var(--card);
+	border: 1px solid var(--line);
+	border-radius: var(--radius-sm);
+}
+
+.tally-n { display: block; font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.tally-l { display: block; font-size: 10.5px; text-transform: uppercase;
+	letter-spacing: .06em; color: var(--muted); }
+.tally.is-good .tally-n { color: var(--go); }
+.tally.is-warn .tally-n { color: var(--amber); }
+.tally.is-bad  .tally-n { color: var(--stop); }
+
+.input-mini { min-height: 30px; padding: 3px 7px; font-size: 12px; width: auto; }
+
+/* Put-away is grouped by rack, because that is the order you walk it. */
+.rack-group {
+	border: 1px solid var(--line);
+	border-radius: var(--radius-sm);
+	margin-bottom: 10px;
+	overflow: hidden;
+}
+
+.rack-group.is-open { border-color: var(--go); box-shadow: 0 0 0 2px var(--go-soft); }
+
+.rack-group-head {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 9px 12px;
+	background: var(--surface);
+	border-bottom: 1px solid var(--line);
+	font-family: var(--mono);
+	font-size: 13px;
+}
+
+.rack-group.is-open .rack-group-head { background: var(--go-soft); }
+.rack-group-head .panel-note { margin-left: auto; font-family: var(--sans); }
+.rack-group .scan-line:last-child { border-bottom: 0; }
+
+/* ============================================================ status board
+ *
+ * A wall board: it has to be legible from across a room and must not scroll
+ * at 1280x800, so the page is a fixed-height grid and only the attention list
+ * is allowed to overflow.
+ */
+
+.board { display: flex; flex-direction: column; gap: 12px; }
+
+.board-bar { display: flex; align-items: center; gap: 12px; }
+
+.board-live {
+	display: flex; align-items: center; gap: 8px;
+	font-size: 12px; color: var(--muted);
+}
+
+.board-live b { color: var(--go); letter-spacing: .04em; text-transform: uppercase; font-size: 11px; }
+
+.board-clock {
+	font-family: var(--mono);
+	font-size: 19px;
+	font-weight: 600;
+	color: var(--navy);
+	font-variant-numeric: tabular-nums;
+}
+
+.board-tiles { grid-template-columns: repeat(6, 1fr); }
+.board-tiles .tile { padding: 10px 12px; }
+.board-tiles .tile-value { font-size: 30px; line-height: 1.05; }
+.board-tiles .tile-label { font-size: 10px; }
+.board-tiles .tile-foot { font-size: 10.5px; }
+
+.board-flow { margin-bottom: 0; padding-bottom: 12px; }
+
+/* ------------------------------------------------------------- the flow */
+
+.flow { display: flex; align-items: stretch; gap: 2px; }
+
+.flow-step {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 3px;
+	padding: 8px 4px 6px;
+	border-radius: var(--radius-sm);
+	color: var(--ink);
+	text-align: center;
+	min-width: 0;
+}
+
+.flow-step:hover { background: var(--surface); text-decoration: none; }
+.flow-step.is-empty { opacity: .42; }
+
+.flow-n { font-size: 27px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.flow-muted { color: var(--muted); }
+.flow-sky   { color: var(--blue); }
+.flow-warn  { color: var(--amber); }
+.flow-good  { color: var(--go); }
+.flow-bad   { color: var(--stop); }
+
+.flow-l {
+	font-size: 10.5px;
+	text-transform: uppercase;
+	letter-spacing: .05em;
+	color: var(--muted);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 100%;
+}
+
+/* A column that grows with the count — the shape of the queue at a glance. */
+.flow-bar {
+	width: 100%;
+	height: 26px;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	margin-top: 2px;
+}
+
+.flow-bar span {
+	display: block;
+	width: 60%;
+	min-height: 2px;
+	background: currentColor;
+	opacity: .22;
+	border-radius: 2px 2px 0 0;
+}
+
+.flow-arrow {
+	align-self: center;
+	color: var(--line);
+	font-size: 20px;
+	line-height: 1;
+	flex: 0 0 auto;
+}
+
+.flow-lost {
+	align-self: center;
+	margin-left: 10px;
+	padding-left: 12px;
+	border-left: 1px dashed var(--line);
+	font-size: 10.5px;
+	line-height: 1.25;
+	color: var(--muted);
+	text-align: center;
+}
+
+.flow-lost b { display: block; font-size: 20px; color: var(--stop); }
+
+/* --------------------------------------------------------- bottom panels */
+
+.board-grid { display: grid; grid-template-columns: 1.25fr 1fr 1fr; gap: 12px; align-items: start; }
+.board-grid .panel { margin-bottom: 0; }
+
+/* The one thing allowed to overflow, because the list has no natural bound. */
+.board-scroll { max-height: 268px; overflow-y: auto; }
+
+.risk-heads { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.risk-heads .tile { padding: 9px 11px; }
+.risk-heads .tile-value { font-size: 20px; }
+
+@media (max-width: 1400px) {
+	.board-tiles { grid-template-columns: repeat(3, 1fr); }
+	.board-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 1000px) {
+	.board-grid { grid-template-columns: 1fr; }
+	.flow { flex-wrap: wrap; }
+	.flow-arrow { display: none; }
+}

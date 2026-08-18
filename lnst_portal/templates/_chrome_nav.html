@@ -1,0 +1,22 @@
+{#- One <nav> serves both shells. On desk and terminal CSS makes it a sticky
+    248px rail; in mode-mobile the same element becomes the bottom bar through
+    `order: 99` and a row layout. No second markup path. -#}
+{%- import "lnst_portal/templates/_marks.html" as marks -%}
+<nav class="lnst-nav">
+	<a class="nav-brand" href="/lnst">{{ marks.lnst(17) }}</a>
+
+	{% for group in nav_groups %}
+	{% if group.label %}<div class="nav-group-label">{{ group.label }}</div>{% endif %}
+	<div class="nav-group">
+		{% for item in group["items"] %}
+		<a class="nav-link {% if item.key == screen_key %}is-active{% endif %}"
+		   href="{{ '/lnst/' + item.slug if item.slug else '/lnst' }}">
+			{% set icon = item.icon %}{% include "lnst_portal/templates/_icons.html" %}
+			<span>{{ item.short if mode == "mobile" else item.label }}</span>
+		</a>
+		{% endfor %}
+	</div>
+	{% endfor %}
+
+	<div class="nav-foot">LNST Operations · mockup</div>
+</nav>

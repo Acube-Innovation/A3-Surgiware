@@ -1,0 +1,60 @@
+{% extends "lnst_portal/templates/lnst_base.html" %}
+
+{% block content %}
+
+{# Everything below is filled by screens/home.js from mock_data.js. The markup
+   carries the shape; the numbers are never server-rendered. #}
+
+<div class="tiles" data-kpis></div>
+
+<div class="split">
+	<section class="panel">
+		<div class="panel-head">
+			<h2>Needs attention today</h2>
+			<span class="spacer"></span>
+			<span class="panel-note" data-attention-count></span>
+		</div>
+		<div data-attention></div>
+	</section>
+
+	<section class="panel">
+		<div class="panel-head">
+			<h2>Where everything is</h2>
+			<span class="spacer"></span>
+			<a class="panel-note" href="/lnst/status-board">Live board</a>
+		</div>
+		<div data-states></div>
+	</section>
+</div>
+
+<section class="panel">
+	<div class="panel-head">
+		<h2>Recent challans</h2>
+		<span class="spacer"></span>
+		<a class="panel-note" href="/lnst/challans">All challans</a>
+	</div>
+	<div data-challans></div>
+</section>
+
+<section class="panel">
+	<div class="panel-head"><h2>Open a role</h2></div>
+	<div class="role-cards">
+		{% for group in role_cards %}
+		<div class="role-card is-{{ group.id }}">
+			<h2>{{ group.title }}</h2>
+			<div class="role-sub">{{ group.blurb }}</div>
+			<div class="role-links">
+				{% for s in group.screens %}
+				<a href="/lnst/{{ s.slug }}">
+					{% set icon = s.icon %}{% include "lnst_portal/templates/_icons.html" %}
+					<span>{{ s.label }}</span>
+					<span class="soon">soon</span>
+				</a>
+				{% endfor %}
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</section>
+
+{% endblock %}
